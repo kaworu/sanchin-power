@@ -7,10 +7,10 @@ ROM::SQL.migration do
         id uuid NOT NULL DEFAULT gen_random_uuid(),
         created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        login varchar(255) DEFAULT NULL,
+        login character varying(255) DEFAULT NULL,
         password bcrypthash DEFAULT NULL,
-        firstname varchar(255) NOT NULL,
-        lastname varchar(255) NOT NULL,
+        firstname character varying(255) NOT NULL,
+        lastname character varying(255) NOT NULL,
         birthdate date NOT NULL,
         gender gender DEFAULT NULL,
 
