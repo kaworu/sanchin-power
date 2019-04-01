@@ -21,10 +21,17 @@ app.configure :development do
     t.fail_on_error = false
   end
   RuboCop::RakeTask.new
+  task :default do
+    Rake::Task['rubocop'].invoke
+    Rake::Task['reek'].invoke
+  end
 end
 
 app.configure :test do
   # test related tasks
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new(:spec)
+  task :default do
+    Rake::Task['spec'].invoke
+  end
 end
