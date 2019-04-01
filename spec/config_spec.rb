@@ -30,4 +30,10 @@ describe Sanchin::Config do
       expect(@config.database_url).to match(%r{^postgres://})
     end
   end
+
+  describe '#rom_path' do
+    it 'should be db/' do
+      expect(@config.rom_path).to eq("#{APP_ROOT}/db")
+    end
+  end
 end

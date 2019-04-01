@@ -13,7 +13,7 @@ module Sanchin
       @root    = root
       @config  = Config.new(root: @root)
       @rconfig = ROM::Configuration.new(:sql, config.database_url)
-      @rconfig.auto_registration(config.rom_auto_registration_path)
+      @rconfig.auto_registration(config.rom_path)
       @rom = ROM.container(@rconfig)
     end
 

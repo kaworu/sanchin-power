@@ -1,10 +1,9 @@
 # frozen_string_literal: true
+require 'dotenv'
 
 module Sanchin
   # Sanchin Power Configuration handler.
   class Config
-    require 'dotenv'
-
     # Load a new configuration given the project's root path.
     def initialize(root:)
       @root = root
@@ -28,7 +27,7 @@ module Sanchin
 
     # ROM::Configuration auto_registration path.
     # see ROM::Configuration
-    def rom_auto_registration_path
+    def rom_path
       File.join(@root, 'db')
     end
 
