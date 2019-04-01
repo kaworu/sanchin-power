@@ -1,0 +1,21 @@
+---
+
+### Generic smell configuration
+
+detectors:
+    # You can use filters to silence Reek warnings.  Either because you simply
+    # disagree with Reek (we are not the police) or because you want to fix
+    # this at a later point in time.
+    UtilityFunction:
+        exclude:
+            - "Sanchin::Config#bcrypt_cost"
+            - "Sanchin::Config#database_url"
+    ControlParameter:
+        exclude:
+            - "Sanchin::App#configure"
+
+### Excluding directories
+
+# Directories and files below will not be scanned at all
+exclude_paths:
+  - vendor/

@@ -1,0 +1,9 @@
+# see https://rubocop.readthedocs.io/en/latest/configuration/
+AllCops:
+    TargetRubyVersion: 2.3
+    Exclude:
+        - '.git/**/*'
+        - 'bin/*'
+        - 'node_modules/**/*'
+        - 'spec/spec_helper.rb'
+        - 'vendor/**/*'
