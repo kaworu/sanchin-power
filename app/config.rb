@@ -5,6 +5,8 @@ require 'dotenv'
 module Sanchin
   # Sanchin Power Configuration handler.
   class Config
+    attr_reader :root
+
     # Load a new configuration given the project's root path.
     def initialize(root:)
       @root = root

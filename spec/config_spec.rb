@@ -7,6 +7,12 @@ describe Sanchin::Config do
     @config = Sanchin::Config.new(root: APP_ROOT)
   end
 
+  describe '#root' do
+    it 'should be APP_ROOT' do
+      expect(@config.root).to be APP_ROOT
+    end
+  end
+
   describe '#env' do
     it 'should be :test' do
       expect(@config.env).to be_a(Symbol).and eq(:test)
