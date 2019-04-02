@@ -36,7 +36,10 @@ module Query
         gender gender DEFAULT NULL,
 
         PRIMARY KEY (id),
-        CONSTRAINT updated_at_gte_created_at CHECK (updated_at >= created_at),
+        CONSTRAINT birthday_in_the_past CHECK (birthday <= CURRENT_DATE),
+        CONSTRAINT login_min_length CHECK (login IS NULL OR length(login) >= 3),
+        CONSTRAINT non_empty_names CHECK (firstname <> '' AND lastname <> ''),
+        CONSTRAINT ordered_timestamps CHECK (created_at <= updated_at AND updated_at <= CURRENT_TIMESTAMP),
         UNIQUE (login)
       );
     SQL

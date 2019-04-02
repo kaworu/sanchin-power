@@ -3,7 +3,7 @@
 ROM::SQL.migration do
   up do
     run <<-'SQL'
-      CREATE TYPE gender AS ENUM ('male', 'female');
+      CREATE TYPE gender AS ENUM ('female', 'male');
     SQL
   end
 

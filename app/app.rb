@@ -1,22 +1,18 @@
 # frozen_string_literal: true
 
-require 'rom'
-require 'rom-sql'
-require_relative '../db/db'
 require_relative 'config'
+require_relative '../lib/repositories'
 
 module Sanchin
   # The Sanchin Power Application.
   class App
-    attr_reader :root, :config, :rom
+    attr_reader :root, :config, :repositories
 
     # Load a new app given the project's root path.
     def initialize(root:)
-      @root    = root
-      @config  = Config.new(root: @root)
-      @rconfig = ROM::Configuration.new(:sql, config.database_url)
-      @rconfig.auto_registration(config.rom_path, namespace: false)
-      @rom = ROM.container(@rconfig)
+      @root = root
+      @config = Config.new(root: @root)
+      @repositories = Repositories.new(@config)
     end
 
     # The loaded environment.

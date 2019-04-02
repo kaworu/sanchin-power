@@ -114,6 +114,9 @@ if ENV['COVERAGE']
     add_filter '/vendor/'
     add_group 'Application', 'app'
     add_group 'Db', 'db'
+    add_group 'Entities', 'lib/entities'
+    add_group 'Repositories', 'lib/repositories'
+    add_group 'Validators', 'lib/validators'
   end
   SimpleCov.coverage_dir 'tmp/coverage'
 end

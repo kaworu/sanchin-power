@@ -11,6 +11,6 @@ namespace :db do
     # load the Sanchin Power Application.
     require_relative '../app/app'
     app = Sanchin::App.new(root: Rake.original_dir)
-    ROM::SQL::RakeSupport.env = app.rom
+    ROM::SQL::RakeSupport.env = app.repositories.rom
   end
 end

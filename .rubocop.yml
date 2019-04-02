@@ -8,8 +8,10 @@ AllCops:
         - 'spec/spec_helper.rb'
         - 'vendor/**/*'
 
-Metrics/LineLength:
-    Enabled: false
+# We like to use "transform(v) rescue v" patterns for changesets.
+Style/RescueModifier:
+    Exclude:
+        - 'db/changesets/**/*'
 
 # top-level describe RSpec block can be very long.
 Metrics/BlockLength:

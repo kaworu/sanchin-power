@@ -14,9 +14,10 @@ Tech-savvy stuff will be here.
 
 hierarchy
 ---------
-- *app/* Our [Sinatra][] application and stuff.
+- *app/* Our [Sinatra][] application.
 - *bin/* Some bundled executables.
 - *db/* [Ruby Object Mapper][ROM] stuff.
+- *lib/* Our business logic stuff.
 - *public/* statically served HTTP directory.
 - *spec/* [Rspec][] tests.
 - *tasks/* custom [Rake][] tasks.
