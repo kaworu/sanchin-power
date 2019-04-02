@@ -4,17 +4,18 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-gem 'sinatra',   '~> 2.0', '>= 2.0.5'
-gem 'dotenv',    '~> 2.7', '>= 2.7.2'
 gem 'bcrypt',    '~> 3.1', '>= 3.1.12'
+gem 'dotenv',    '~> 2.7', '>= 2.7.2'
+gem 'pg',        '~> 1.1', '>= 1.1.4'
+gem 'rake',      '~> 12.3', '>= 12.3.2'
 gem 'rom',       '~> 4.2', '>= 4.2.1'
 gem 'rom-sql',   '~> 2.5'
 gem 'sequel_pg', '~> 1.12'
-gem 'pg',        '~> 0.18.4'
+gem 'sinatra',   '~> 2.0', '>= 2.0.5'
 
 group :development do
-  gem 'rubocop',       '~> 0.39.0'
-  gem 'rspec',         '~> 3.5'
+  gem 'bundler-audit', '~> 0.6.1'
   gem 'reek',          '~> 5.3', '>= 5.3.2'
-  gem 'bundler-audit', '~> 0.4.0'
+  gem 'rspec',         '~> 3.8'
+  gem 'rubocop',       '>= 0.66.0'
 end
