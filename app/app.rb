@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'rom'
 require 'rom-sql'
+require_relative '../db/db'
 require_relative 'config'
 
 module Sanchin
@@ -13,7 +14,7 @@ module Sanchin
       @root    = root
       @config  = Config.new(root: @root)
       @rconfig = ROM::Configuration.new(:sql, config.database_url)
-      @rconfig.auto_registration(config.rom_path)
+      @rconfig.auto_registration(config.rom_path, namespace: false)
       @rom = ROM.container(@rconfig)
     end
 

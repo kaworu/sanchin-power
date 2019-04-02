@@ -7,3 +7,6 @@ AllCops:
         - 'node_modules/**/*'
         - 'spec/spec_helper.rb'
         - 'vendor/**/*'
+
+Metrics/LineLength:
+    Enabled: false
