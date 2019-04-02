@@ -5,28 +5,14 @@ require_relative 'app/app'
 app = Sanchin::App.new(root: Rake.original_dir)
 
 # tasks we want in all env
-# bcrypt cost
 load 'tasks/bcrypt.rake'
-# db stuff
-require 'rom/sql/rake_task'
-namespace :db do
-  task :setup do
-    ROM::SQL::RakeSupport.env = app.rom
-  end
-end
+load 'tasks/rom.rake'
 
 # development related tasks
 app.configure :development do
-  # reek
-  require 'reek/rake/task'
-  Reek::Rake::Task.new do |task|
-    task.fail_on_error = false
-  end
-  # rubocop
-  require 'rubocop/rake_task'
-  RuboCop::RakeTask.new do |task|
-    task.fail_on_error = false
-  end
+  load 'tasks/reek.rake'
+  load 'tasks/rubocop.rake'
+  load 'tasks/bundle_audit.rake'
   # default development task
   task :default do
     Rake::Task['rubocop'].invoke
@@ -36,9 +22,7 @@ end
 
 # test related tasks
 app.configure :test do
-  # rspec
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new(:spec)
+  load 'tasks/rspec.rake'
   # default test task
   task :default do
     Rake::Task['spec'].invoke

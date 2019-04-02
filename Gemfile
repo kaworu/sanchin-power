@@ -13,7 +13,8 @@ gem 'sequel_pg', '~> 1.12'
 gem 'pg',        '~> 0.18.4'
 
 group :development do
-  gem 'rubocop', '~> 0.39.0'
-  gem 'rspec',   '~> 3.5'
-  gem 'reek',    '~> 5.3', '>= 5.3.2'
+  gem 'rubocop',       '~> 0.39.0'
+  gem 'rspec',         '~> 3.5'
+  gem 'reek',          '~> 5.3', '>= 5.3.2'
+  gem 'bundler-audit', '~> 0.4.0'
 end
