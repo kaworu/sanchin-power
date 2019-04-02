@@ -20,8 +20,8 @@ namespace :bcrypt do
       end
       ms = 1000 * time.real
       printf "%19d\t%8d\n", cost, ms
-      break if ms > 1000
       cost += 1
+      break if ms > 1000
     end
   end
 end

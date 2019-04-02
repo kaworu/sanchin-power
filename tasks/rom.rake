@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 # Ruby Object Manager Rake stuff.
 #
 # See https://rom-rb.org/4.0/learn/sql/migrations/

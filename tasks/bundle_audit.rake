@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-#
+
 # See http://caseywest.com/run-bundle-audit-from-rake/
 
 require 'bundler/audit/cli'

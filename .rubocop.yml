@@ -10,3 +10,8 @@ AllCops:
 
 Metrics/LineLength:
     Enabled: false
+
+# top-level describe RSpec block can be very long.
+Metrics/BlockLength:
+    Exclude:
+        - 'spec/**/*'

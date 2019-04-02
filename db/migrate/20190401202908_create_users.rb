@@ -2,7 +2,28 @@
 
 ROM::SQL.migration do
   up do
-    run <<-'SQL'
+    run Query.users_table
+    run Query.users_initcap_names_fn
+    run Query.users_lower_login_fn
+    run Query.trigger_updated_at
+    run Query.trigger_users_initcap_names
+    run Query.trigger_users_lower_login
+  end
+
+  down do
+    run Query.drop_trigger_users_lower_login
+    run Query.drop_trigger_users_initcap_names
+    run Query.drop_trigger_updated_at
+    run Query.drop_users_lower_login_fn
+    run Query.drop_users_initcap_names_fn
+    run Query.drop_users_table
+  end
+end
+
+# Migration SQL queries.
+module Query
+  def self.users_table
+    <<-'SQL'
       CREATE TABLE users (
         id uuid NOT NULL DEFAULT gen_random_uuid(),
         created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -19,17 +40,31 @@ ROM::SQL.migration do
         UNIQUE (login)
       );
     SQL
-    run <<-'SQL'
+  end
+
+  def self.drop_users_table
+    'DROP TABLE IF EXISTS users'
+  end
+
+  def self.users_initcap_names_fn
+    <<-'SQL'
       CREATE OR REPLACE FUNCTION users_initcap_names()
-      RETURNS TRIGGER AS $$
-      BEGIN
-        NEW.firstname := initcap(NEW.firstname);
-        NEW.lastname  := initcap(NEW.lastname);
-        RETURN NEW;
-      END;
+        RETURNS TRIGGER AS $$
+        BEGIN
+          NEW.firstname := initcap(NEW.firstname);
+          NEW.lastname  := initcap(NEW.lastname);
+          RETURN NEW;
+        END;
       $$ LANGUAGE plpgsql;
     SQL
-    run <<-'SQL'
+  end
+
+  def self.drop_users_initcap_names_fn
+    'DROP FUNCTION IF EXISTS users_initcap_names'
+  end
+
+  def self.users_lower_login_fn
+    <<-'SQL'
       CREATE OR REPLACE FUNCTION users_lower_login()
       RETURNS TRIGGER AS $$
       BEGIN
@@ -38,29 +73,45 @@ ROM::SQL.migration do
       END;
       $$ LANGUAGE plpgsql;
     SQL
-    run <<-'SQL'
+  end
+
+  def self.drop_users_lower_login_fn
+    'DROP FUNCTION IF EXISTS users_lower_login'
+  end
+
+  def self.trigger_updated_at
+    <<-'SQL'
       CREATE TRIGGER trigger_updated_at
       BEFORE UPDATE ON users
       FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
     SQL
-    run <<-'SQL'
+  end
+
+  def self.drop_trigger_updated_at
+    'DROP TRIGGER IF EXISTS trigger_updated_at ON users'
+  end
+
+  def self.trigger_users_initcap_names
+    <<-'SQL'
       CREATE TRIGGER trigger_users_initcap_names
       BEFORE INSERT OR UPDATE ON users
       FOR EACH ROW EXECUTE PROCEDURE users_initcap_names();
     SQL
-    run <<-'SQL'
+  end
+
+  def self.drop_trigger_users_initcap_names
+    'DROP TRIGGER IF EXISTS trigger_users_initcap_names ON users'
+  end
+
+  def self.trigger_users_lower_login
+    <<-'SQL'
       CREATE TRIGGER trigger_users_lower_login
       BEFORE INSERT OR UPDATE ON users
       FOR EACH ROW EXECUTE PROCEDURE users_lower_login();
     SQL
   end
 
-  down do
-    run 'DROP TRIGGER IF EXISTS trigger_users_lower_login ON users'
-    run 'DROP TRIGGER IF EXISTS trigger_users_initcap_names ON users'
-    run 'DROP TRIGGER IF EXISTS trigger_updated_at ON users'
-    run 'DROP FUNCTION IF EXISTS users_lower_login'
-    run 'DROP FUNCTION IF EXISTS users_initcap_names'
-    run 'DROP TABLE IF EXISTS users'
+  def self.drop_trigger_users_lower_login
+    'DROP TRIGGER IF EXISTS trigger_users_lower_login ON users'
   end
 end
