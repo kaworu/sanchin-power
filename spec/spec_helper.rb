@@ -105,3 +105,15 @@ APP_ROOT   = File.expand_path(File.join(RSPEC_ROOT, '..'))
 # Add the project's root directory to the load path.
 # see https://stackoverflow.com/a/16963314
 $LOAD_PATH << APP_ROOT
+
+# SimpleCov setup.
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/spec/'
+    add_filter '/vendor/'
+    add_group 'Application', 'app'
+    add_group 'Db', 'db'
+  end
+  SimpleCov.coverage_dir 'tmp/coverage'
+end
