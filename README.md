@@ -8,16 +8,17 @@ Tech-savvy stuff will be here.
 
 * [PostgreSQL][]
 * [Ruby Object Mapper][ROM]
+* [TRAILBLAZER][TRB]
 * [Sinatra][]
 * Vue.js
 * Foundation?
 
 hierarchy
 ---------
-- *app/* Our [Sinatra][] application.
+- *app/* Our application stuff.
 - *bin/* Some bundled executables.
-- *db/* [Ruby Object Mapper][ROM] stuff.
-- *lib/* Our business logic stuff.
+- *db/migrate* [Ruby Object Mapper][ROM] migrations.
+- *lib/* Some handly helpers.
 - *public/* statically served HTTP directory.
 - *spec/* [Rspec][] tests.
 - *tasks/* custom [Rake][] tasks.
@@ -26,6 +27,7 @@ hierarchy
 
 [PostgreSQL]: https://www.postgresql.org
 [ROM]:     https://rom-rb.org
+[TRB]:     http://trailblazer.to
 [Sinatra]: http://sinatrarb.com
 [Rspec]:   https://rspec.info
 [Rake]:    https://ruby.github.io/rake/

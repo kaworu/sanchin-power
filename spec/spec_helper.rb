@@ -110,13 +110,12 @@ $LOAD_PATH << APP_ROOT
 if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start do
+    add_filter '/public/'
     add_filter '/spec/'
     add_filter '/vendor/'
-    add_group 'Application', 'app'
-    add_group 'Db', 'db'
-    add_group 'Entities', 'lib/entities'
-    add_group 'Repositories', 'lib/repositories'
-    add_group 'Validators', 'lib/validators'
+    add_group 'Misc', 'lib'
+    add_group 'User Concept', 'app/concepts/user'
+    add_group 'App', '.'
   end
-  SimpleCov.coverage_dir 'tmp/coverage'
+  SimpleCov.coverage_dir 'public/coverage'
 end

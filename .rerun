@@ -1,0 +1,10 @@
+--verbose
+--pattern '**/*.rb'
+--ignore 'bin/*'
+--ignore 'db/*'
+--ignore 'public/*'
+--ignore 'spec/*'
+--ignore 'tasks/*'
+--ignore 'tmp/*'
+--ignore 'vendor/*'
+'./bin/rackup -p 4567'

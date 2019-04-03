@@ -8,9 +8,8 @@ require 'rom/sql/rake_task'
 
 namespace :db do
   task :setup do
-    # load the Sanchin Power Application.
-    require_relative '../app/app'
-    app = Sanchin::App.new(root: Rake.original_dir)
-    ROM::SQL::RakeSupport.env = app.repositories.rom
+    require 'rom'
+    config = ROM::Configuration.new(:sql, ENV['DATABASE_URL'])
+    ROM::SQL::RakeSupport.env = ROM.container(config)
   end
 end

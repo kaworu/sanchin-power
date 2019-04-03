@@ -2,12 +2,10 @@
 
 require 'dry-validation'
 
-module Validators
-  # Users changesets related validators.
-  module Users
+module UserConcept
+  module Schemas
+    # User creation Schema.
     CreateSchema = Dry::Validation.Schema do
-      optional(:login)     { none? }
-      optional(:password)  { none? }
       required(:firstname) { filled? & str? & size?(1..255) }
       required(:lastname)  { filled? & str? & size?(1..255) }
       required(:birthday)  { filled? & date? & lt?(Date.today) }
