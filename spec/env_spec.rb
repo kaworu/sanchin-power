@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'app/env'
+require 'lib/env'
 
 describe Sanchin::Env do
   before(:context) do

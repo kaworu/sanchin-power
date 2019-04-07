@@ -9,7 +9,7 @@ require 'rom-sql'
 require 'sinatra/base'
 require 'sinatra/json'
 require_relative 'app/concepts/user'
-require_relative 'app/env'
+require_relative 'lib/env'
 
 module Sanchin
   # The Sanchin Power Application.

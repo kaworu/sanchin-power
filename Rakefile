@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # load ENV.
-require_relative 'app/env'
+require_relative 'lib/env'
 Sanchin::Env.load
 
 # tasks we want in all env
