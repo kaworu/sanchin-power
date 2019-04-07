@@ -21,6 +21,7 @@ module Sanchin
       # Sinatra settings
       enable :logging if settings.development? or settings.production?
       set :show_exceptions, :after_handler if settings.development?
+      disable :static
       # A common idiom is to set the :root setting explicitly in the main
       # application file
       set :root, File.dirname(__FILE__)
