@@ -60,11 +60,12 @@ module Sanchin
       cache_control :no_cache
     end
 
-    # heartbeat
+    # heartbeat end-point.
     get '/api/v1/ping' do
       json answer: 'pong'
     end
 
+    # User creation end-point.
     post '/api/v1/users' do
       operation = UserConcept::Operation::Create
       result = operation.call(payload: json_body, user_repo: settings.user_repo)
