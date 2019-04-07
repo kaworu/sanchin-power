@@ -3,9 +3,9 @@
 require 'dry-validation'
 
 module UserConcept
-  module Schemas
+  module Schema
     # User creation Schema.
-    CreateSchema = Dry::Validation.Schema do
+    Create = Dry::Validation.Schema do
       required(:firstname) { filled? & str? & size?(1..255) }
       required(:lastname)  { filled? & str? & size?(1..255) }
       required(:birthday)  { filled? & date? & lt?(Date.today) }

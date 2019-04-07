@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'bcrypt'
+require 'json'
 require 'rom'
 require 'rom-sql'
 require 'sinatra/base'
-require_relative 'app/api/v1'
+require 'sinatra/json'
 require_relative 'app/concepts/user'
 require_relative 'app/env'
 
@@ -28,13 +29,36 @@ module Sanchin
       config = ROM::Configuration.new(:sql, ENV['DATABASE_URL'])
       config.register_relation(UserConcept::Relation)
       container = ROM.container(config)
-      set :repositories,
-          users: UserConcept::Repository.new(container)
+      set :user_repo, UserConcept::Repository.new(container)
     end
 
-    use API::VersionOne
+    helpers do
+      # The request body as JSON, halt with "400 Bad Request" on parsing
+      # failure.
+      def json_body
+        body = request.body
+        body.rewind
+        JSON.parse body.read
+      rescue JSON::ParserError
+        status :bad_request
+        halt json(error: 'failed to parse the request body as JSON')
+      end
+    end
 
-    # start the server if we are executed directly.
-    run! if app_file == $PROGRAM_NAME
+    before do
+      cache_control :private, :must_revalidate, max_age: 60
+    end
+
+    post '/api/v1/users' do
+      body = json_body
+      result = UserConcept::Operation::Create.call(payload: body, user_repo: settings.user_repo)
+      if result.success?
+        status :created
+        json result[:presentable]
+      else
+        status :bad_request
+        json result[:validation].errors
+      end
+    end
   end
 end

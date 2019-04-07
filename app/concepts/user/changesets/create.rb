@@ -3,7 +3,7 @@
 require 'rom-changeset'
 
 module UserConcept
-  module Changesets
+  module Changeset
     # User creation Changeset.
     #
     # Allow only a subset of the user schema. Other attributes (e.g. login,
@@ -12,8 +12,8 @@ module UserConcept
       map do
         symbolize_keys
         accept_keys %i[firstname lastname birthday gender]
-        map_value :birthday, ->(val) { Date.parse(val) rescue val }
-        map_value :gender,   ->(val) { val.to_s        rescue val }
+        map_value :birthday, ->(val) { Date.parse(val)   rescue val }
+        map_value :gender,   ->(val) { val.to_s.downcase rescue val }
       end
     end
   end

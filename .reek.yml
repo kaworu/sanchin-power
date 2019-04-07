@@ -1,8 +1,20 @@
 # See https://github.com/troessner/reek#configuration-options
 ---
 
+### Directory specific configuration
+
+# You can configure smells on a per-directory base.
+# Note that we only allow configuration on a directory level, not a file level,
+# so all paths have to point to directories.
+directories:
+    "app/concepts/user/operations":
+        LongParameterList:
+            enabled: false
+        UtilityFunction:
+            enabled: false
+
 ### Excluding directories
 
 # Directories and files below will not be scanned at all
 exclude_paths:
-  - vendor/
+    - vendor/
