@@ -14,7 +14,7 @@ module UserConcept
     # NOTE: hide the password property
     property :firstname
     property :lastname
-    property :birthday
+    property :birthdate
     property :gender
   end
 end

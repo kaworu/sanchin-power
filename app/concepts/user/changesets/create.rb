@@ -11,9 +11,9 @@ module UserConcept
     class Create < ROM::Changeset::Create
       map do
         symbolize_keys
-        accept_keys %i[firstname lastname birthday gender]
-        map_value :birthday, ->(val) { Date.parse(val)   rescue val }
-        map_value :gender,   ->(val) { val.to_s.downcase rescue val }
+        accept_keys %i[firstname lastname birthdate gender]
+        map_value :birthdate, ->(val) { Date.parse(val)   rescue val }
+        map_value :gender,    ->(val) { val.to_s.downcase rescue val }
       end
     end
   end

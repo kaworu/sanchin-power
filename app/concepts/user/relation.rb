@@ -17,7 +17,7 @@ module UserConcept
       attribute :password, Types::String.constrained(format: BCRYPT_HASH)
       attribute :firstname, Types::String
       attribute :lastname, Types::String
-      attribute :birthday, Types::Date
+      attribute :birthdate, Types::Date
       attribute :gender, Types::String.enum('female', 'male')
     end
 

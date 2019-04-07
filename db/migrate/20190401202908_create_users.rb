@@ -32,11 +32,11 @@ module Query
         password bcrypthash DEFAULT NULL,
         firstname citext NOT NULL,
         lastname citext NOT NULL,
-        birthday date NOT NULL,
+        birthdate date NOT NULL,
         gender gender DEFAULT NULL,
 
         PRIMARY KEY (id),
-        CONSTRAINT birthday_in_the_past CHECK (birthday <= CURRENT_DATE),
+        CONSTRAINT birthdate_in_the_past CHECK (birthdate <= CURRENT_DATE),
         CONSTRAINT login_min_length CHECK (login IS NULL OR length(login) >= 3),
         CONSTRAINT non_empty_names CHECK (firstname <> '' AND lastname <> ''),
         CONSTRAINT ordered_timestamps CHECK (created_at <= updated_at AND updated_at <= CURRENT_TIMESTAMP),

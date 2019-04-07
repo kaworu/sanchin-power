@@ -8,7 +8,7 @@ module UserConcept
     Create = Dry::Validation.Schema do
       required(:firstname) { filled? & str? & size?(1..255) }
       required(:lastname)  { filled? & str? & size?(1..255) }
-      required(:birthday)  { filled? & date? & lt?(Date.today) }
+      required(:birthdate) { filled? & date? & lt?(Date.today) }
       optional(:gender)    { filled? & included_in?(%w[female male]) }
     end
   end
