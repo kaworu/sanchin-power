@@ -56,17 +56,18 @@ module Sanchin
         reqid = RequestStore[:request_id]
         "[#{datetime.iso8601 3} #{reqid} #{severity}] #{msg}\n"
       end
+      # Disable caching so that clients are forced to re-validate any resource.
       cache_control :no_cache
     end
 
-
+    # heartbeat
     get '/api/v1/ping' do
-      json(answer: 'pong')
+      json answer: 'pong'
     end
 
     post '/api/v1/users' do
-      body = json_body
-      result = UserConcept::Operation::Create.call(payload: body, user_repo: settings.user_repo)
+      operation = UserConcept::Operation::Create
+      result = operation.call(payload: json_body, user_repo: settings.user_repo)
       if result.success?
         status :created
         json result[:presentable]
