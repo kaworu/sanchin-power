@@ -2,6 +2,8 @@
 
 require 'bcrypt'
 require 'json'
+require 'rack-request-id'
+require 'request_store'
 require 'rom'
 require 'rom-sql'
 require 'sinatra/base'
@@ -12,9 +14,10 @@ require_relative 'app/env'
 module Sanchin
   # The Sanchin Power Application.
   class App < Sinatra::Base
-    Env.load
+    use Rack::RequestId, storage: RequestStore
 
     configure do
+      Env.load
       # Sinatra settings
       enable :logging if settings.development? or settings.production?
       set :show_exceptions, :after_handler if settings.development?
@@ -46,7 +49,17 @@ module Sanchin
     end
 
     before do
+      # Custom Logger format so that we can add the request id,
+      # see https://github.com/sinatra/sinatra/issues/1219
+      logger.formatter = proc do |severity, datetime, _, msg|
+        reqid = RequestStore[:request_id]
+        "[#{datetime.iso8601 3} #{reqid} #{severity}] #{msg}\n"
+      end
       cache_control :private, :must_revalidate, max_age: 60
+    end
+
+    get '/api/v1/ping' do
+      json(answer: 'pong')
     end
 
     post '/api/v1/users' do
