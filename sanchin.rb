@@ -56,8 +56,9 @@ module Sanchin
         reqid = RequestStore[:request_id]
         "[#{datetime.iso8601 3} #{reqid} #{severity}] #{msg}\n"
       end
-      cache_control :private, :must_revalidate, max_age: 60
+      cache_control :no_cache
     end
+
 
     get '/api/v1/ping' do
       json(answer: 'pong')
