@@ -17,5 +17,10 @@ module UserConcept
     def find(id)
       users.by_pk(id).one!
     end
+
+    # Find a user by its username login.
+    def find_by_login(name)
+      users.where(login: name).one
+    end
   end
 end
