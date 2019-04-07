@@ -23,6 +23,8 @@ module UserConcept
       pass :persist
       pass :present
 
+      protected
+
       def changeset(options, user_repo:, payload:, **)
         options[:changeset] = user_repo.create(payload)
       end
