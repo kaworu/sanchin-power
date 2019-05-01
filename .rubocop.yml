@@ -1,3 +1,4 @@
+require: rubocop-performance
 # see https://rubocop.readthedocs.io/en/latest/configuration/
 AllCops:
     TargetRubyVersion: 2.5
@@ -20,16 +21,17 @@ AllCops:
 Metrics/LineLength:
       Max: 100
 
-# We like to use "transform(v) rescue v" patterns for changesets.
-Style/RescueModifier:
-    Exclude:
-        - 'app/concepts/*/changesets/*'
-
 # top-level describe RSpec block can be very long.
 Metrics/BlockLength:
     Exclude:
         - 'spec/**/*'
 
-# && and || are ugly
-Style/AndOr:
-    Enabled: false
+# We like to use "transform(v) rescue v" patterns for coercion.
+Style/RescueModifier:
+    Exclude:
+        - 'app/lib/types.rb'
+
+# ignorance can be a bliss.
+Style/RescueStandardError:
+    Exclude:
+        - 'app/concepts/*/transactions/*'

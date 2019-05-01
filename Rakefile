@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-# load ENV.
-require_relative 'lib/env'
-Sanchin::Env.load
+require_relative 'system/container'
 
 # tasks we want in all env
 load 'tasks/bcrypt.rake'
-load 'tasks/rom.rake'
+load 'tasks/sequel.rake'
 
 # development related tasks
-Sanchin::Env.configure :development do
+Sanchin::Container.environment :development do
   load 'tasks/bundle_audit.rake'
   load 'tasks/reek.rake'
   load 'tasks/rerun.rake'
@@ -19,8 +17,8 @@ Sanchin::Env.configure :development do
 end
 
 # test related tasks
-Sanchin::Env.configure :test do
+Sanchin::Container.environment :test do
   load 'tasks/rspec.rake'
   # default test task
-  task default: 'spec'
+  task default: %w[db:reset spec]
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ROM::SQL.migration do
+Sequel.migration do
   up do
     run <<-'SQL'
       CREATE OR REPLACE FUNCTION set_updated_at()

@@ -7,27 +7,27 @@ What we use
 Tech-savvy stuff will be here.
 
 * [PostgreSQL][]
-* [Ruby Object Mapper][ROM]
-* [TRAILBLAZER][TRB]
+* [Sequel][]
+* [dry-rb][]
 * [Sinatra][]
-* Vue.js
+* Vue.js?
 * Foundation?
 
 hierarchy
 ---------
 - *app/* Our application stuff.
 - *bin/* Some bundled executables.
-- *db/migrate* [Ruby Object Mapper][ROM] migrations.
-- *lib/* Some handly helpers.
+- *db/migrations* [Sequel][] migrations.
 - *public/* statically served HTTP directory.
 - *spec/* [Rspec][] tests.
+- *system/* [dry-system](https://dry-rb.org/gems/dry-system/) booting stuff.
 - *tasks/* custom [Rake][] tasks.
 - *tmp/* project's temporary folder.
 - *vendor/* [Bundler][] stuff.
 
 [PostgreSQL]: https://www.postgresql.org
-[ROM]:     https://rom-rb.org
-[TRB]:     http://trailblazer.to
+[Sequel]:  https://sequel.jeremyevans.net/
+[dry-rb]:  https://dry-rb.org/
 [Sinatra]: http://sinatrarb.com
 [Rspec]:   https://rspec.info
 [Rake]:    https://ruby.github.io/rake/

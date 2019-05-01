@@ -4,19 +4,21 @@
 ### Generic smell configuration
 
 detectors:
-    # see https://github.com/troessner/reek/blob/master/docs/Utility-Function.md#configuration
+    # https://github.com/troessner/reek/blob/master/docs/Utility-Function.md#configuration
     UtilityFunction:
         public_methods_only: true
-
-### Directory specific configuration
-
-# You can configure smells on a per-directory base.
-# Note that we only allow configuration on a directory level, not a file level,
-# so all paths have to point to directories.
-directories:
-    "app/concepts/user/operations":
-        LongParameterList:
-            enabled: false
+        exclude: ['RSpecHelper']
+    DataClump:
+        exclude: ['RSpecHelper']
+    # https://github.com/troessner/reek/blob/master/docs/Uncommunicative-Module-Name.md#configuration
+    UncommunicativeModuleName:
+        accept: ['APIv']
+    # https://github.com/troessner/reek/blob/master/docs/Feature-Envy.md#configuration
+    FeatureEnvy:
+        exclude: ['Sanchin::User#to_json']
+    # https://github.com/troessner/reek/blob/v5.3.2/docs/Too-Many-Statements.md#configuration
+    TooManyStatements:
+        max_statements: 8
 
 ### Excluding directories
 

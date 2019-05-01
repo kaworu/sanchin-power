@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ROM::SQL.migration do
+Sequel.migration do
   up do
     run Query.users_table
     run Query.users_initcap_names_fn
@@ -36,11 +36,12 @@ module Query
         gender gender DEFAULT NULL,
 
         PRIMARY KEY (id),
-        CONSTRAINT birthdate_in_the_past CHECK (birthdate <= CURRENT_DATE),
-        CONSTRAINT login_min_length CHECK (login IS NULL OR length(login) >= 3),
-        CONSTRAINT non_empty_names CHECK (firstname <> '' AND lastname <> ''),
         CONSTRAINT ordered_timestamps CHECK (created_at <= updated_at AND updated_at <= CURRENT_TIMESTAMP),
-        UNIQUE (login)
+        UNIQUE (login),
+        CONSTRAINT login_min_length CHECK (login IS NULL OR length(login) >= 3),
+        CONSTRAINT both_login_and_password_or_none CHECK (login IS NOT NULL AND password IS NOT NULL OR login IS NULL AND password IS NULL),
+        CONSTRAINT non_empty_names CHECK (firstname <> '' AND lastname <> ''),
+        CONSTRAINT birthdate_in_the_past CHECK (birthdate <= CURRENT_DATE)
       );
     SQL
   end
