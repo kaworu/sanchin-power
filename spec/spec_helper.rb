@@ -11,7 +11,6 @@ if ENV['COVERAGE']
     add_group 'API', 'app/api'
     add_group 'Misc', 'app/lib'
     add_group 'Concepts', 'app/concepts'
-    add_group 'App', '.'
   end
   SimpleCov.coverage_dir 'public/coverage'
 end

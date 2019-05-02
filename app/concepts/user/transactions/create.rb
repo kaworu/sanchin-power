@@ -11,7 +11,8 @@ module Sanchin
 
         check :authorize
         step  :validate
-        map   :create
+        map   :hash
+        step  :create
 
         private
 
@@ -23,8 +24,19 @@ module Sanchin
           Schemas::Create.call(input).to_monad
         end
 
+        def hash(validated)
+          if validated[:password]
+            cleartext = validated[:password]
+            hashed = Container['password'].create cleartext
+            validated[:password] = hashed
+          end
+          validated
+        end
+
         def create(validated)
-          User.create(validated)
+          Success User.create(validated)
+        rescue
+          Failure login: 'is already taken'
         end
       end
     end

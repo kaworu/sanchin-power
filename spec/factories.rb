@@ -9,6 +9,11 @@ FactoryBot.define do
     gender    { Faker::Gender.binary_type }
     birthdate { Faker::Date.birthday(5, 95) }
 
+    trait :with_credentials do
+      login    { Faker::Internet.unique.username(3) }
+      password { Faker::Internet.password(8) }
+    end
+
     initialize_with { attributes }
   end
 end

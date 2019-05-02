@@ -14,7 +14,9 @@ module Sanchin
         check :authorize
         check :match
         step  :validate
-        map   :update
+        step  :validate_credentials
+        map   :hash
+        step  :update
 
         private
 
@@ -40,9 +42,30 @@ module Sanchin
           Schemas::Update.call(input).to_monad
         end
 
+        def validate_credentials(validated)
+          if validated[:password] && !validated[:login] && !@user.login
+            Failure login: 'must be filled'
+          elsif validated[:login] && !validated[:password] && !@user.password
+            Failure password: 'must be filled'
+          else
+            Success validated
+          end
+        end
+
+        def hash(validated)
+          if validated[:password]
+            cleartext = validated[:password]
+            hashed = Container['password'].create cleartext
+            validated[:password] = hashed
+          end
+          validated
+        end
+
         def update(validated)
           @user.update(validated)
-          @user.refresh
+          Success @user.refresh
+        rescue
+          Failure login: 'is already taken'
         end
       end
     end

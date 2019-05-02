@@ -123,11 +123,75 @@ describe 'user creation end-point', :transaction do
   end
 
   describe 'login' do
-    it 'should be ignored' do
-      post_json '/api/v1/users', build(:user, login: 'root')
+    it 'should not be required' do
+      post_json '/api/v1/users', {}
+      expect(last_response.status).to eq(400)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body).not_to include(:login)
+    end
+    it 'should be required when password is provided' do
+      post_json '/api/v1/users', password: 'secret'
+      expect(last_response.status).to eq(400)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body[:login]).to include('must be filled')
+    end
+    it 'should not be too short' do
+      post_json '/api/v1/users', login: '12'
+      expect(last_response.status).to eq(400)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body[:login]).to include('length must be within 3 - 255')
+    end
+    it 'should not be too long' do
+      post_json '/api/v1/users', login: 'x' * 256
+      expect(last_response.status).to eq(400)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body[:login]).to include('length must be within 3 - 255')
+    end
+    it 'should be stripped and capitalized' do
+      post_json '/api/v1/users', build(:user, :with_credentials, login: " JoHn\t")
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
-      expect(json_body[:login]).to be_nil
+      expect(json_body[:login]).to eq('john')
+    end
+    context 'when there is already a user using it' do
+      before(:each) do
+        result = create_user.call build(:user, :with_credentials)
+        expect(result).to be_success
+        @user = result.value!
+      end
+      it 'should be unique' do
+        post_json '/api/v1/users', build(:user, :with_credentials, login: @user.login)
+        expect(last_response.status).to eq(400)
+        expect(last_response.content_type).to eq('application/json')
+        expect(json_body[:login]).to eq('is already taken')
+      end
+    end
+  end
+
+  describe 'password' do
+    it 'should not be required' do
+      post_json '/api/v1/users', {}
+      expect(last_response.status).to eq(400)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body).not_to include(:password)
+    end
+    it 'should be required when login is provided' do
+      post_json '/api/v1/users', login: 'john'
+      expect(last_response.status).to eq(400)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body[:password]).to include('must be filled')
+    end
+    it 'should not be too short' do
+      post_json '/api/v1/users', password: '12345'
+      expect(last_response.status).to eq(400)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body[:password]).to include('size cannot be less than 6')
+    end
+    it 'should not be returned' do
+      post_json '/api/v1/users', build(:user, :with_credentials)
+      expect(last_response.status).to eq(201)
+      expect(last_response.content_type).to eq('application/json')
+      expect(json_body).not_to include(:password)
     end
   end
 

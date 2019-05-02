@@ -128,13 +128,111 @@ describe 'users update end-point', :transaction do
     end
 
     describe 'login' do
-      it 'should be ignored' do
-        patch_json "/api/v1/users/#{@user.id}", login: 'root'
-        expect(last_response.status).to eq(200)
+      it 'should be required when password is provided' do
+        patch_json "/api/v1/users/#{@user.id}", password: 'secret'
+        expect(last_response.status).to eq(400)
         expect(last_response.content_type).to eq('application/json')
-        expect(json_body[:login]).to be_nil
+        expect(json_body[:login]).to include('must be filled')
         expect(found = find_user.call(@user.id)).to be_success
         expect(found.value!).to eq(@user)
+      end
+      it 'should not be too short' do
+        patch_json "/api/v1/users/#{@user.id}", login: '12'
+        expect(last_response.status).to eq(400)
+        expect(last_response.content_type).to eq('application/json')
+        expect(json_body[:login]).to include('length must be within 3 - 255')
+        expect(found = find_user.call(@user.id)).to be_success
+        expect(found.value!).to eq(@user)
+      end
+      it 'should not be too long' do
+        patch_json "/api/v1/users/#{@user.id}", login: 'x' * 256
+        expect(last_response.status).to eq(400)
+        expect(last_response.content_type).to eq('application/json')
+        expect(json_body[:login]).to include('length must be within 3 - 255')
+        expect(found = find_user.call(@user.id)).to be_success
+        expect(found.value!).to eq(@user)
+      end
+      it 'should be stripped and capitalized' do
+        patch_json "/api/v1/users/#{@user.id}", build(:user, :with_credentials, login: " JoHn\t")
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq('application/json')
+        expect(json_body[:login]).to eq('john')
+        expect(found = find_user.call(@user.id)).to be_success
+        expect(json_body).to eq(hiphop(found.value!))
+      end
+    end
+
+    describe 'password' do
+      it 'should be required when login is provided' do
+        patch_json "/api/v1/users/#{@user.id}", login: 'john'
+        expect(last_response.status).to eq(400)
+        expect(last_response.content_type).to eq('application/json')
+        expect(json_body[:password]).to include('must be filled')
+        expect(found = find_user.call(@user.id)).to be_success
+        expect(found.value!).to eq(@user)
+      end
+      it 'should not be too short' do
+        patch_json "/api/v1/users/#{@user.id}", password: '12345'
+        expect(last_response.status).to eq(400)
+        expect(last_response.content_type).to eq('application/json')
+        expect(json_body[:password]).to include('size cannot be less than 6')
+        expect(found = find_user.call(@user.id)).to be_success
+        expect(found.value!).to eq(@user)
+      end
+      it 'should not be returned' do
+        patch_json "/api/v1/users/#{@user.id}", build(:user, :with_credentials)
+        expect(last_response.status).to eq(200)
+        expect(last_response.content_type).to eq('application/json')
+        expect(json_body).not_to include(:password)
+        expect(found = find_user.call(@user.id)).to be_success
+        expect(json_body).to eq(hiphop(found.value!))
+      end
+    end
+
+    context 'when the user has credentials' do
+      before(:each) do
+        result = create_user.call build(:user, :with_credentials)
+        expect(result).to be_success
+        @user = result.value!
+      end
+
+      describe 'login' do
+        it 'should not be required to change the password' do
+          patch_json "/api/v1/users/#{@user.id}", password: 'secret'
+          expect(last_response.status).to eq(200)
+          expect(last_response.content_type).to eq('application/json')
+          expect(found = find_user.call(@user.id)).to be_success
+          expect(json_body).to eq(hiphop(found.value!))
+        end
+      end
+
+      describe 'password' do
+        it 'should not be required to change the login' do
+          patch_json "/api/v1/users/#{@user.id}", login: 'john'
+          expect(last_response.status).to eq(200)
+          expect(last_response.content_type).to eq('application/json')
+          expect(found = find_user.call(@user.id)).to be_success
+          expect(json_body).to eq(hiphop(found.value!))
+        end
+      end
+    end
+
+    context 'when there is another user with credentials' do
+      before(:each) do
+        result = create_user.call build(:user, :with_credentials)
+        expect(result).to be_success
+        @other = result.value!
+      end
+
+      describe 'login' do
+        it 'should be unique' do
+          patch_json "/api/v1/users/#{@user.id}", build(:user, :with_credentials, login: @other.login)
+          expect(last_response.status).to eq(400)
+          expect(last_response.content_type).to eq('application/json')
+          expect(json_body[:login]).to eq('is already taken')
+          expect(found = find_user.call(@user.id)).to be_success
+          expect(found.value!).to eq(@user)
+        end
       end
     end
 
