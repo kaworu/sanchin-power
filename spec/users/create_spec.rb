@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'user creation end-point' do
+describe 'user creation end-point', :transaction do
   describe 'when the content-type is not application/json' do
     it 'should return 400 Bad Request' do
       header 'content-type', 'text/plain'
@@ -39,7 +39,7 @@ describe 'user creation end-point' do
       expect(last_response.content_type).to eq('application/json')
       expect(json_body[:firstname]).to include('length must be within 1 - 255')
     end
-    it 'should be stripped and capitalized', :transaction do
+    it 'should be stripped and capitalized' do
       post_json '/api/v1/users', build(:user, firstname: " john\n")
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
@@ -66,7 +66,7 @@ describe 'user creation end-point' do
       expect(last_response.content_type).to eq('application/json')
       expect(json_body[:lastname]).to include('length must be within 1 - 255')
     end
-    it 'should be stripped and capitalized', :transaction do
+    it 'should be stripped and capitalized' do
       post_json '/api/v1/users', build(:user, lastname: "\tDoE\n ")
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
@@ -93,7 +93,7 @@ describe 'user creation end-point' do
       expect(last_response.content_type).to eq('application/json')
       expect(json_body[:birthdate]).to include("must be less than #{Date.today}")
     end
-    it 'should be stripped and ISO8601', :transaction do
+    it 'should be stripped and ISO8601' do
       post_json '/api/v1/users', build(:user, birthdate: " 5 Nov 1605\n")
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
@@ -114,7 +114,7 @@ describe 'user creation end-point' do
       expect(last_response.content_type).to eq('application/json')
       expect(json_body[:gender]).to include('must be one of: female, male')
     end
-    it 'should be stripped and downcased', :transaction do
+    it 'should be stripped and downcased' do
       post_json '/api/v1/users', build(:user, gender: '  MALE ')
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
@@ -123,7 +123,7 @@ describe 'user creation end-point' do
   end
 
   describe 'login' do
-    it 'should be ignored', :transaction do
+    it 'should be ignored' do
       post_json '/api/v1/users', build(:user, login: 'root')
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
@@ -132,7 +132,7 @@ describe 'user creation end-point' do
   end
 
   describe 'id' do
-    it 'should be generated', :transaction do
+    it 'should be generated' do
       post_json '/api/v1/users', build(:user)
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
@@ -141,18 +141,18 @@ describe 'user creation end-point' do
   end
 
   describe 'created_at' do
-    it 'should be before now', :transaction do
+    it 'should be before now' do
       post_json '/api/v1/users', build(:user)
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
       expect(json_body).to include(:created_at)
-      created_at = Time.iso8601(json_body[:created_at])
-      expect(created_at).to be <= Time.now
+      created_at = DateTime.iso8601(json_body[:created_at])
+      expect(created_at).to be <= DateTime.now
     end
   end
 
   describe 'updated_at' do
-    it 'should be the same as created_at', :transaction do
+    it 'should be the same as created_at' do
       post_json '/api/v1/users', build(:user)
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
@@ -161,13 +161,13 @@ describe 'user creation end-point' do
   end
 
   describe 'HTTP_LAST_MODIFIED' do
-    it 'should be the same as updated_at', :transaction do
+    it 'should be the same as updated_at' do
       post_json '/api/v1/users', build(:user)
       expect(last_response.status).to eq(201)
       expect(last_response.content_type).to eq('application/json')
       expect(last_response.header['last-modified']).to be
-      last_modified = Time.httpdate(last_response.header['last-modified'])
-      updated_at = Time.iso8601(json_body[:updated_at])
+      last_modified = DateTime.httpdate(last_response.header['last-modified'])
+      updated_at = DateTime.iso8601(json_body[:updated_at])
       expect(last_modified).to eq(updated_at)
     end
   end

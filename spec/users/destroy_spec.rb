@@ -12,7 +12,8 @@ describe 'users destruction end-point', :transaction do
       delete '/api/v1/users/foo'
       expect(last_response.status).to eq(404)
       expect(last_response.body).to be_empty
-      expect(find_user.call(@user.id)).to be_success
+      expect(found = find_user.call(@user.id)).to be_success
+      expect(found.value!).to eq(@user)
     end
   end
   context 'when given an invalid id' do
@@ -20,7 +21,8 @@ describe 'users destruction end-point', :transaction do
       delete "/api/v1/users/#{SecureRandom.uuid}"
       expect(last_response.status).to eq(404)
       expect(last_response.body).to be_empty
-      expect(find_user.call(@user.id)).to be_success
+      expect(found = find_user.call(@user.id)).to be_success
+      expect(found.value!).to eq(@user)
     end
   end
 
@@ -46,7 +48,8 @@ describe 'users destruction end-point', :transaction do
         delete "/api/v1/users/#{@user.id}"
         expect(last_response.status).to eq(412)
         expect(last_response.body).to be_empty
-        expect(find_user.call(@user.id)).to be_success
+        expect(found = find_user.call(@user.id)).to be_success
+        expect(found.value!).to eq(@user)
       end
     end
   end

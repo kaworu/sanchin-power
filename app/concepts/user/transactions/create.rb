@@ -9,9 +9,9 @@ module Sanchin
       class Create
         include Dry::Transaction(container: Container)
 
-        check  :authorize
-        step   :validate
-        map    :create
+        check :authorize
+        step  :validate
+        map   :create
 
         private
 

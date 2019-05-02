@@ -10,10 +10,10 @@ module Sanchin
         include Dry::Transaction(container: Container)
 
         around :transaction, with: 'database.transaction'
-        step :find
+        step  :find
         check :authorize
         check :match
-        tee :destroy
+        tee   :destroy
 
         private
 
