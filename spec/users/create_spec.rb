@@ -34,7 +34,7 @@ describe 'user creation end-point', :transaction do
       expect(json_body[:firstname]).to include('length must be within 1 - 255')
     end
     it 'should not be too long' do
-      post_json '/api/v1/users', firstname: 'x' * 300
+      post_json '/api/v1/users', firstname: 'x' * 256
       expect(last_response.status).to eq(400)
       expect(last_response.content_type).to eq('application/json')
       expect(json_body[:firstname]).to include('length must be within 1 - 255')
@@ -61,7 +61,7 @@ describe 'user creation end-point', :transaction do
       expect(json_body[:lastname]).to include('length must be within 1 - 255')
     end
     it 'should not be too long' do
-      post_json '/api/v1/users', lastname: 'x' * 300
+      post_json '/api/v1/users', lastname: 'x' * 256
       expect(last_response.status).to eq(400)
       expect(last_response.content_type).to eq('application/json')
       expect(json_body[:lastname]).to include('length must be within 1 - 255')

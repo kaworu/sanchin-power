@@ -19,6 +19,9 @@ detectors:
     # https://github.com/troessner/reek/blob/v5.3.2/docs/Too-Many-Statements.md#configuration
     TooManyStatements:
         max_statements: 8
+    # https://github.com/troessner/reek/blob/master/docs/Instance-Variable-Assumption.md#configuration
+    InstanceVariableAssumption:
+        exclude: ['Sanchin::UserConcept::Transactions::Update']
 
 ### Excluding directories
 

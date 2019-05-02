@@ -29,7 +29,7 @@ describe 'users update end-point', :transaction do
   context 'when given a valid id' do
     describe 'firstname' do
       it 'should not be empty' do
-        patch_json "/api/v1/users/#{@user.id}",  firstname: ''
+        patch_json "/api/v1/users/#{@user.id}", firstname: ''
         expect(last_response.status).to eq(400)
         expect(last_response.content_type).to eq('application/json')
         expect(json_body[:firstname]).to include('length must be within 1 - 255')
@@ -37,7 +37,7 @@ describe 'users update end-point', :transaction do
         expect(found.value!).to eq(@user)
       end
       it 'should not be too long' do
-        patch_json "/api/v1/users/#{@user.id}", firstname: 'x' * 300
+        patch_json "/api/v1/users/#{@user.id}", firstname: 'x' * 256
         expect(last_response.status).to eq(400)
         expect(last_response.content_type).to eq('application/json')
         expect(json_body[:firstname]).to include('length must be within 1 - 255')
@@ -64,7 +64,7 @@ describe 'users update end-point', :transaction do
         expect(found.value!).to eq(@user)
       end
       it 'should not be too long' do
-        patch_json "/api/v1/users/#{@user.id}", lastname: 'x' * 300
+        patch_json "/api/v1/users/#{@user.id}", lastname: 'x' * 256
         expect(last_response.status).to eq(400)
         expect(last_response.content_type).to eq('application/json')
         expect(json_body[:lastname]).to include('length must be within 1 - 255')
