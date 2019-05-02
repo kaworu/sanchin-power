@@ -62,7 +62,36 @@ module Sanchin
         end
       end
 
-      # User destroying end-point.
+      # User update end-point.
+      patch '/api/v1/users/:id' do |id|
+        transaction = UserConcept::Transactions::Update.new
+        transaction.with_step_args(
+          find: [id: id],
+          authorize: [current_user],
+          match: [http_if_unmodified_since]
+        ).call(json_body) do |on|
+          on.success do |user|
+            status :ok
+            last_modified user.updated_at
+            json user
+          end
+          on.failure :find do
+            status :not_found
+          end
+          on.failure :authorize do
+            status :unauthorized
+          end
+          on.failure :match do
+            status :precondition_failed
+          end
+          on.failure :validate do |messages|
+            status :bad_request
+            json messages
+          end
+        end
+      end
+
+      # User destruction end-point.
       delete '/api/v1/users/:id' do |id|
         transaction = UserConcept::Transactions::Destroy.new
         transaction.with_step_args(

@@ -14,6 +14,14 @@ module Sanchin
         required(:birthdate, Types::Params::Date)        { date? & lt?(Date.today) }
         optional(:gender, Types::StrippedDowncased)      { str? & included_in?(%w[female male]) }
       end
+      # User update Schema.
+      Update = Dry::Validation.Params do
+        configure { config.type_specs = true }
+        optional(:firstname, Types::StrippedCapitalized) { str? & size?(1..255) }
+        optional(:lastname, Types::StrippedCapitalized)  { str? & size?(1..255) }
+        optional(:birthdate, Types::Params::Date)        { date? & lt?(Date.today) }
+        optional(:gender, Types::StrippedDowncased)      { str? & included_in?(%w[female male]) }
+      end
     end
   end
 end
