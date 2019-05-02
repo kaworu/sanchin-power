@@ -36,43 +36,7 @@ module Sanchin
         cache_control :no_cache
       end
 
-      helpers do
-        # Return 400 if the request content-type is not JSON.
-        def application_json_content_type
-          return true if request.content_type == 'application/json'
-
-          status :bad_request
-          halt json(error: 'expected application/json as content-type')
-        end
-
-        # The request body as JSON, halt with "400 Bad Request" on parsing
-        # failure.
-        def json_body
-          application_json_content_type
-          body = request.body
-          body.rewind
-          JSON.parse body.read
-        rescue JSON::ParserError
-          status :bad_request
-          halt json(error: 'failed to parse the request body as JSON')
-        end
-
-        # the DateTime found in the if-unmodified-since http header or nil.
-        def http_if_unmodified_since
-          if_unmodified_since = request.env['HTTP_IF_UNMODIFIED_SINCE']
-          return nil unless if_unmodified_since
-
-          DateTime.httpdate(if_unmodified_since)
-        rescue ArgumentError
-          status :bad_request
-          halt json(error: 'expected HTTP-date as if-unmodified-since')
-        end
-
-        # TODO
-        def current_user
-          nil
-        end
-      end
+      helpers Help
     end
   end
 end

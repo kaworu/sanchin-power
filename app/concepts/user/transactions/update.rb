@@ -14,8 +14,9 @@ module Sanchin
         check :authorize
         check :match
         step  :validate
-        step  :validate_credentials
-        map   :hash
+        step  :validate_login
+        step  :validate_password
+        map   :hash_password
         step  :update
 
         private
@@ -34,27 +35,31 @@ module Sanchin
         def match(_input, last_seen)
           # NOTE: the updated_at dance is to trim the datetime at the second
           # granularity.
-          updated_at = DateTime.iso8601(@user.updated_at.iso8601)
-          !last_seen || updated_at <= last_seen
+          DateTime.iso8601(@user.updated_at.iso8601) <= last_seen
         end
 
         def validate(input)
           Schemas::Update.call(input).to_monad
         end
 
-        def validate_credentials(validated)
+        def validate_login(validated)
           if validated[:password] && !validated[:login] && !@user.login
             Failure login: 'must be filled'
-          elsif validated[:login] && !validated[:password] && !@user.password
+          else
+            Success validated
+          end
+        end
+
+        def validate_password(validated)
+          if validated[:login] && !validated[:password] && !@user.password
             Failure password: 'must be filled'
           else
             Success validated
           end
         end
 
-        def hash(validated)
-          if validated[:password]
-            cleartext = validated[:password]
+        def hash_password(validated)
+          if (cleartext = validated[:password])
             hashed = Container['password'].create cleartext
             validated[:password] = hashed
           end

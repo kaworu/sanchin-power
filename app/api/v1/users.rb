@@ -23,11 +23,8 @@ module Sanchin
             json messages
           end
           on.failure :create do |messages|
-            status :bad_request
+            status :conflict
             json messages
-          end
-          on.failure do
-            status :server_error
           end
         end
       end
@@ -45,9 +42,6 @@ module Sanchin
           end
           on.failure :authorize do
             status :unauthorized
-          end
-          on.failure do
-            status :server_error
           end
         end
       end
@@ -68,9 +62,6 @@ module Sanchin
           end
           on.failure :authorize do
             status :unauthorized
-          end
-          on.failure do
-            status :server_error
           end
         end
       end
@@ -101,16 +92,17 @@ module Sanchin
             status :bad_request
             json messages
           end
-          on.failure :validate_credentials do |messages|
+          on.failure :validate_login do |messages|
+            status :bad_request
+            json messages
+          end
+          on.failure :validate_password do |messages|
             status :bad_request
             json messages
           end
           on.failure :update do |messages|
-            status :bad_request
+            status :conflict
             json messages
-          end
-          on.failure do
-            status :server_error
           end
         end
       end
@@ -133,9 +125,6 @@ module Sanchin
           end
           on.failure :match do
             status :precondition_failed
-          end
-          on.failure do
-            status :server_error
           end
         end
       end

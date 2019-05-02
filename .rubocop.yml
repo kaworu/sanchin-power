@@ -19,12 +19,16 @@ AllCops:
 
 # Sometimes there is no choice.
 Metrics/LineLength:
-      Max: 100
-
-# top-level describe RSpec block can be very long.
+    Max: 100
+    Exclude:
+        - 'app/api/**/*'
+Metrics/ClassLength:
+    Exclude:
+        - 'app/api/**/*'
 Metrics/BlockLength:
     Exclude:
-        - 'spec/**/*'
+        - 'app/api/**/*'
+        - 'spec/**/*' # top-level describe RSpec block can be very long.
 
 # We like to use "transform(v) rescue v" patterns for coercion.
 Style/RescueModifier:

@@ -11,7 +11,7 @@ module Sanchin
 
         check :authorize
         step  :validate
-        map   :hash
+        map   :hash_password
         step  :create
 
         private
@@ -24,9 +24,8 @@ module Sanchin
           Schemas::Create.call(input).to_monad
         end
 
-        def hash(validated)
-          if validated[:password]
-            cleartext = validated[:password]
+        def hash_password(validated)
+          if (cleartext = validated[:password])
             hashed = Container['password'].create cleartext
             validated[:password] = hashed
           end

@@ -2,12 +2,11 @@
 
 describe 'user creation end-point', :transaction do
   describe 'when the content-type is not application/json' do
-    it 'should return 400 Bad Request' do
+    it 'should return 415 Unsupported Media Type' do
       header 'content-type', 'text/plain'
       post '/api/v1/users', '{}'
-      expect(last_response.status).to eq(400)
-      expect(last_response.content_type).to eq('application/json')
-      expect(json_body[:error]).to eq('expected application/json as content-type')
+      expect(last_response.status).to eq(415)
+      expect(last_response.body).to be_empty
     end
   end
   describe 'when the request body is not JSON formated' do
@@ -161,7 +160,7 @@ describe 'user creation end-point', :transaction do
       end
       it 'should be unique' do
         post_json '/api/v1/users', build(:user, :with_credentials, login: @user.login)
-        expect(last_response.status).to eq(400)
+        expect(last_response.status).to eq(409)
         expect(last_response.content_type).to eq('application/json')
         expect(json_body[:login]).to eq('is already taken')
       end
