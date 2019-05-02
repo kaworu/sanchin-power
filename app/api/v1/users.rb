@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'api/v1/base'
+
 module Sanchin
   module APIv1
     # Sanchin user concept related end-points.
@@ -68,11 +70,12 @@ module Sanchin
 
       # User update end-point.
       patch '/api/v1/users/:id' do |id|
+        last_seen = http_if_unmodified_since
         transaction = UserConcept::Transactions::Update.new
         transaction.with_step_args(
           find: [id: id],
           authorize: [current_user],
-          match: [http_if_unmodified_since]
+          match: [last_seen]
         ).call(json_body) do |on|
           on.success do |user|
             status :ok
@@ -86,7 +89,7 @@ module Sanchin
             status :unauthorized
           end
           on.failure :match do
-            status :precondition_failed
+            status(last_seen ? :precondition_failed : :precondition_required)
           end
           on.failure :validate do |messages|
             status :bad_request
@@ -109,10 +112,11 @@ module Sanchin
 
       # User destruction end-point.
       delete '/api/v1/users/:id' do |id|
+        last_seen = http_if_unmodified_since
         transaction = UserConcept::Transactions::Destroy.new
         transaction.with_step_args(
           authorize: [current_user],
-          match: [http_if_unmodified_since]
+          match: [last_seen]
         ).call(id) do |on|
           on.success do
             status :no_content
@@ -124,7 +128,7 @@ module Sanchin
             status :unauthorized
           end
           on.failure :match do
-            status :precondition_failed
+            status(last_seen ? :precondition_failed : :precondition_required)
           end
         end
       end

@@ -9,7 +9,6 @@ describe 'users update end-point', :transaction do
 
   context 'when given malformed id' do
     it 'should return 404 Not Found' do
-      header 'if-unmodified-since', @user.updated_at.httpdate
       patch_json '/api/v1/users/foo', firstname: 'john'
       expect(last_response.status).to eq(404)
       expect(last_response.body).to be_empty
@@ -19,7 +18,6 @@ describe 'users update end-point', :transaction do
   end
   context 'when given an invalid id' do
     it 'should return 404 Not Found' do
-      header 'if-unmodified-since', @user.updated_at.httpdate
       patch_json "/api/v1/users/#{SecureRandom.uuid}", firstname: 'john'
       expect(last_response.status).to eq(404)
       expect(last_response.body).to be_empty

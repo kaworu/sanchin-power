@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'api/v1/base'
+
 module Sanchin
   module APIv1
     # Very simple app providing a single entry point to query the app status.

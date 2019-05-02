@@ -34,6 +34,7 @@ Metrics/BlockLength:
 Style/RescueModifier:
     Exclude:
         - 'app/lib/types.rb'
+        - 'app/api/*/help.rb'
 
 # ignorance can be a bliss.
 Style/RescueStandardError:

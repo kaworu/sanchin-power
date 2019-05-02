@@ -30,7 +30,7 @@ module Sanchin
         def match(user, last_seen)
           # NOTE: the updated_at dance is to trim the datetime at the second
           # granularity.
-          DateTime.iso8601(user.updated_at.iso8601) <= last_seen
+          last_seen && DateTime.iso8601(user.updated_at.iso8601) <= last_seen
         end
 
         def destroy(user)
