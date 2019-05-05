@@ -4,7 +4,7 @@ Sequel.migration do
   up do
     run <<-'SQL'
       CREATE DOMAIN bcrypthash AS character varying(60)
-        CHECK (value ~ '^\$2[ayb]\$.{56}$');
+        CHECK (value ~ '^\$[0-9a-z]{2}\$[0-9]{2}\$[A-Za-z0-9./]{53}$');
     SQL
   end
 
