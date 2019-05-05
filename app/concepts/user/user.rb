@@ -10,5 +10,10 @@ module Sanchin
       options[:except] = (options[:except] || []).concat([:password])
       super options
     end
+
+    # updated_at trimmed at the second granularity.
+    def last_update
+      DateTime.iso8601(updated_at.iso8601)
+    end
   end
 end

@@ -33,9 +33,7 @@ module Sanchin
         end
 
         def match(_input, last_seen)
-          # NOTE: the updated_at dance is to trim the datetime at the second
-          # granularity.
-          last_seen && DateTime.iso8601(@user.updated_at.iso8601) <= last_seen
+          last_seen && @user.last_update <= last_seen
         end
 
         def validate(input)
