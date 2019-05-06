@@ -5,6 +5,7 @@ require_relative 'system/container'
 # tasks we want in all env
 load 'tasks/bcrypt.rake'
 load 'tasks/sequel.rake'
+load 'tasks/random.rake'
 
 # development related tasks
 Sanchin::Container.environment :development do
