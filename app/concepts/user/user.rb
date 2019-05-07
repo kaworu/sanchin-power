@@ -7,8 +7,9 @@ module Sanchin
   class User < Sequel::Model
     # hide the password from the JSON output.
     def to_json(options = {})
-      options[:except] = (options[:except] || []).concat([:password])
-      super options
+      # NOTE: there is incompatibility with json and Sequel JsonSerializer,
+      # see https://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/JsonSerializer.html
+      super except: :password
     end
 
     # Overrided to return a BCrypt::Password instance if there is a password.

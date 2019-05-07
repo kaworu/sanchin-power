@@ -29,5 +29,9 @@ describe 'users search end-point', :transaction do
     expect(json_body).to eq(hiphop(@all_users))
   end
 
-  it 'should not return password'
+  it 'should not show password' do
+    header 'authorization', "Bearer #{@token}"
+    get '/api/v1/users'
+    expect(json_body.first).not_to include(:password)
+  end
 end
