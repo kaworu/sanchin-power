@@ -16,7 +16,6 @@ module Sanchin
         step  :validate
         step  :validate_login
         step  :validate_password
-        map   :hash_password
         step  :update
 
         private
@@ -54,14 +53,6 @@ module Sanchin
           else
             Success validated
           end
-        end
-
-        def hash_password(validated)
-          if (cleartext = validated[:password])
-            hashed = Container['password'].create cleartext
-            validated[:password] = hashed
-          end
-          validated
         end
 
         def update(validated)
