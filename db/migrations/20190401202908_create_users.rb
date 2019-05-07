@@ -5,6 +5,7 @@ Sequel.migration do
     run Query.users_table
     run Query.users_initcap_names_fn
     run Query.users_lower_login_fn
+    run Query.trigger_change_version
     run Query.trigger_updated_at
     run Query.trigger_users_initcap_names
     run Query.trigger_users_lower_login
@@ -14,6 +15,7 @@ Sequel.migration do
     run Query.drop_trigger_users_lower_login
     run Query.drop_trigger_users_initcap_names
     run Query.drop_trigger_updated_at
+    run Query.drop_trigger_change_version
     run Query.drop_users_lower_login_fn
     run Query.drop_users_initcap_names_fn
     run Query.drop_users_table
@@ -26,6 +28,7 @@ module Query
     <<-'SQL'
       CREATE TABLE users (
         id uuid NOT NULL DEFAULT gen_random_uuid(),
+        version version NOT NULL,
         created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
         login citext DEFAULT NULL,
@@ -81,6 +84,18 @@ module Query
 
   def self.drop_users_lower_login_fn
     'DROP FUNCTION IF EXISTS users_lower_login'
+  end
+
+  def self.trigger_change_version
+    <<-'SQL'
+      CREATE TRIGGER trigger_change_version
+      BEFORE INSERT OR UPDATE ON users
+      FOR EACH ROW EXECUTE PROCEDURE change_version();
+    SQL
+  end
+
+  def self.drop_trigger_change_version
+    'DROP TRIGGER IF EXISTS trigger_change_version ON users'
   end
 
   def self.trigger_updated_at
