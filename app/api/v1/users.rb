@@ -18,7 +18,7 @@ module Sanchin
             json user
           end
           on.failure :authorize do
-            status(@current_user ? :forbidden : :unauthorized)
+            status :forbidden
           end
           on.failure :validate do |messages|
             status :bad_request
@@ -42,7 +42,7 @@ module Sanchin
             json users
           end
           on.failure :authorize do
-            status(@current_user ? :forbidden : :unauthorized)
+            status :forbidden
           end
         end
       end
@@ -62,7 +62,7 @@ module Sanchin
             status :not_found
           end
           on.failure :authorize do
-            status(@current_user ? :forbidden : :unauthorized)
+            status :forbidden
           end
         end
       end
@@ -84,7 +84,7 @@ module Sanchin
             status :not_found
           end
           on.failure :authorize do
-            status(@current_user ? :forbidden : :unauthorized)
+            status :forbidden
           end
           on.failure :match do
             status(version ? :precondition_failed : :precondition_required)
@@ -123,7 +123,7 @@ module Sanchin
             status :not_found
           end
           on.failure :authorize do
-            status(@current_user ? :forbidden : :unauthorized)
+            status :forbidden
           end
           on.failure :match do
             status(version ? :precondition_failed : :precondition_required)

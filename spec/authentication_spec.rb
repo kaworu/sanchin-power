@@ -25,7 +25,7 @@ describe 'token related end-points and headers', :transaction do
 
     context 'when HTTP_AUTHORIZATION is missing' do
       it 'should return 401 Unauthorized' do
-        header 'authorization', "trololololo"
+        header 'authorization', 'trololololo'
         post '/api/v1/tokens'
         expect(last_response.status).to eq(401)
         expect(last_response.body).to be_empty
@@ -33,7 +33,7 @@ describe 'token related end-points and headers', :transaction do
     end
     context 'when HTTP_AUTHORIZATION is garbage' do
       it 'should return 401 Unauthorized' do
-        header 'authorization', "trololololo"
+        header 'authorization', 'trololololo'
         post '/api/v1/tokens'
         expect(last_response.status).to eq(401)
         expect(last_response.body).to be_empty
@@ -42,7 +42,7 @@ describe 'token related end-points and headers', :transaction do
 
     context 'when HTTP_AUTHORIZATION is Basic garbage' do
       it 'should return 401 Unauthorized' do
-        header 'authorization', "Basic trololololo"
+        header 'authorization', 'Basic trololololo'
         post '/api/v1/tokens'
         expect(last_response.status).to eq(401)
         expect(last_response.body).to be_empty
@@ -100,7 +100,7 @@ describe 'token related end-points and headers', :transaction do
   describe 'API call with HTTP_AUTHORIZATION Bearer' do
     context 'when HTTP_AUTHORIZATION is missing' do
       it 'should return 401 Unauthorized' do
-        header 'authorization', "trololololo"
+        header 'authorization', 'trololololo'
         get "/api/v1/users/#{@current_user.id}"
         expect(last_response.status).to eq(401)
         expect(last_response.body).to be_empty
@@ -109,7 +109,7 @@ describe 'token related end-points and headers', :transaction do
 
     context 'when HTTP_AUTHORIZATION is garbage' do
       it 'should return 401 Unauthorized' do
-        header 'authorization', "trololololo"
+        header 'authorization', 'trololololo'
         get "/api/v1/users/#{@current_user.id}"
         expect(last_response.status).to eq(401)
         expect(last_response.body).to be_empty

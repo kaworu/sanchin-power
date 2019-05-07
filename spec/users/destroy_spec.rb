@@ -48,7 +48,7 @@ describe 'users destruction end-point', :transaction do
   end
 
   it 'should delete the matching user' do
-      header 'authorization', "Bearer #{@token}"
+    header 'authorization', "Bearer #{@token}"
     header 'if-match', etag(@current_user.version)
     delete "/api/v1/users/#{@current_user.id}"
     expect(last_response.status).to eq(204)

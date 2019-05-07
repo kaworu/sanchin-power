@@ -21,7 +21,10 @@ detectors:
         max_statements: 8
     # https://github.com/troessner/reek/blob/master/docs/Instance-Variable-Assumption.md#configuration
     InstanceVariableAssumption:
-        exclude: ['Sanchin::UserConcept::Transactions::Update']
+        exclude: ['/^Sanchin::.*?::Transactions::/']
+    # https://github.com/troessner/reek/blob/v5.3.2/docs/Control-Parameter.md#configuration
+    ControlParameter:
+        exclude: ['/^Sanchin::.*?::Transactions::/']
 
 ### Excluding directories
 

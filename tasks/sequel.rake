@@ -25,25 +25,26 @@ namespace :db do
   desc 'Create a new migration file'
   task :migration, [:name] do |_, args|
     raise ArgumentError, 'migration name required' unless args.name
-    template = <<-EOF
-# frozen_string_literal: true
-
-Sequel.migration do
-  up do
-    # run '...'
-  end
-
-  down do
-    # run '...'
-  end
-end
-    EOF
 
     # Date and Time TimestampMigrator format
     now = DateTime.now.strftime('%Y%m%d%H%M%S')
     name = args.name.downcase.gsub(/\s/, '_')
     path = File.join('db/migrations', "#{now}_#{name}.rb")
-    File.write(File.join(Rake.original_dir, path), template)
+    File.write(File.join(Rake.original_dir, path), MIGRATION_TEMPLATE)
     puts path
   end
 end
+
+MIGRATION_TEMPLATE = <<~RUBY
+  # frozen_string_literal: true
+
+  Sequel.migration do
+    up do
+      # run '...'
+    end
+
+    down do
+      # run '...'
+    end
+  end
+RUBY
