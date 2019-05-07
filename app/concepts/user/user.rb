@@ -11,11 +11,6 @@ module Sanchin
       super options
     end
 
-    # updated_at trimmed at the second granularity.
-    def last_update
-      DateTime.iso8601(updated_at.iso8601)
-    end
-
     # Overrided to return a BCrypt::Password instance if there is a password.
     def password
       password = super
@@ -23,7 +18,7 @@ module Sanchin
       password
     end
 
-    def password= cleartext
+    def password=(cleartext)
       super Container['password'].create(cleartext)
     end
   end

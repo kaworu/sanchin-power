@@ -51,16 +51,35 @@ module RSpecHelper
     JSON.parse(stuff.to_json, symbolize_names: true)
   end
 
-  def create_user
-    transaction = Sanchin::UserConcept::Transactions::Create.new.with_step_args(
-      authorize: [nil] # FIXME
-    )
+  def etag(tag)
+    'W/"%s"' % tag
   end
 
-  def find_user
-    Sanchin::UserConcept::Transactions::Find.new.with_step_args(
-      authorize: [nil] # FIXME
-    )
+  def create_user(built)
+    transaction = Sanchin::UserConcept::Transactions::Create.new(authorize: -> { true })
+    transaction.call(built)
+  end
+
+  def tokenize(user)
+    operation = Sanchin::TokenConcept::Operations::Encode.new
+    operation.call(id: user.id, version: user.version)
+  end
+
+  def find_user(id)
+    transaction = Sanchin::UserConcept::Transactions::Find.new(authorize: -> { true })
+    transaction.call(id)
+  end
+
+  def update_user(id, changes)
+    accept = -> { true }
+    transaction = Sanchin::UserConcept::Transactions::Update.new(authorize: accept, match: accept)
+    transaction.with_step_args(find: [id: id]).call(changes)
+  end
+
+  def destroy_user(id)
+    accept = -> { true }
+    transaction = Sanchin::UserConcept::Transactions::Destroy.new(authorize: accept, match: accept)
+    transaction.call(id)
   end
 end
 

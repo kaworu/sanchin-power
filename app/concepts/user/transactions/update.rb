@@ -31,8 +31,8 @@ module Sanchin
           true
         end
 
-        def match(_input, last_seen)
-          last_seen && @user.last_update <= last_seen
+        def match(_input, version)
+          version && @user.version == version
         end
 
         def validate(input)

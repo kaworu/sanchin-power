@@ -2,38 +2,32 @@
 
 describe 'users search end-point', :transaction do
   before(:each) do
+    creation = create_user build(:user, :with_credentials)
+    expect(creation).to be_success
+    @current_user = creation.value!
+    encoding = tokenize @current_user
+    expect(encoding).to be_success
+    @token = encoding.value!
+  end
+
+  before(:each) do
     # XXX: once the search may use params we will have to craft the list
     # (e.g. gender split etc.)
-    @users = Array.new(10) do
-      result = create_user.call build(:user)
+    users = Array.new(10) do
+      result = create_user build(:user)
       expect(result).to be_success
       result.value!
     end
+    @all_users = [@current_user] + users # FIXME: ugly
   end
 
   it 'should return all users' do
+    header 'authorization', "Bearer #{@token}"
     get '/api/v1/users'
     expect(last_response.status).to eq(200)
     expect(last_response.content_type).to eq('application/json')
-    expect(json_body).to eq(hiphop(@users))
+    expect(json_body).to eq(hiphop(@all_users))
   end
-  context 'with an up-to-date resource' do
-    it 'should return 304 Not Modified' do
-      latest = @users.map(&:updated_at).max
-      header 'if-modified-since', latest.httpdate
-      get '/api/v1/users'
-      expect(last_response.status).to eq(304)
-      expect(last_response.body).to be_empty
-    end
-  end
-  context 'with a stale resource' do
-    it 'should return all users' do
-      latest = @users.map(&:updated_at).max
-      header 'if-modified-since', (latest - 1).httpdate
-      get '/api/v1/users'
-      expect(last_response.status).to eq(200)
-      expect(last_response.content_type).to eq('application/json')
-      expect(json_body).to eq(hiphop(@users))
-    end
-  end
+
+  it 'should not return password'
 end

@@ -13,6 +13,8 @@ module Sanchin
     class Base < Sinatra::Base
       use Rack::RequestId, storage: RequestStore
 
+      helpers Help
+
       # Sinatra settings
       configure do
         # A common idiom is to set the :root setting explicitly in the main
@@ -36,7 +38,26 @@ module Sanchin
         cache_control :no_cache
       end
 
-      helpers Help
+      # authorization Bearer authentication filter.
+      # set @current_user when the token is valid, halt if required.
+      set :authenticated do |required|
+        condition do
+          token = bearer_auth
+          transaction = UserConcept::Transactions::Authenticate.new
+          transaction.call(token) do |on|
+            on.success do |user|
+              @current_user = user
+            end
+            on.failure do
+              if required
+                status :unauthorized
+                response.headers['WWW-Authenticate'] = 'Bearer'
+                halt
+              end
+            end
+          end
+        end
+      end
     end
   end
 end

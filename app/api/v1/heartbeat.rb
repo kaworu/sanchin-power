@@ -7,7 +7,7 @@ module Sanchin
     # Very simple app providing a single entry point to query the app status.
     class Heartbeat < Base
       # heartbeat end-point.
-      get '/api/v1/ping' do
+      get '/api/v1/ping', authenticated: false do
         json answer: 'pong'
       end
     end

@@ -12,5 +12,6 @@ module Sanchin
 
     use APIv1::Heartbeat
     use APIv1::Users
+    use APIv1::Tokens
   end
 end

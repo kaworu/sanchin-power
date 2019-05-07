@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'base64'
+
 module Sanchin
   module APIv1
     # Sinatra helpers for the Sanchin API.
@@ -25,15 +27,24 @@ module Sanchin
         halt json(error: 'failed to parse the request body as JSON')
       end
 
-      # the DateTime found in the if-unmodified-since http header, nil if the
-      # header could not be parsed or was not provided.
-      def http_if_unmodified_since
-        DateTime.httpdate(request.env['HTTP_IF_UNMODIFIED_SINCE']) rescue nil
+      def if_match_version
+        quoted = request.env['HTTP_IF_MATCH'] || ''
+        quoted[/"(.+)"/, 1]
       end
 
-      # TODO
-      def current_user
-        nil
+      # the [username, password] found in the authorization http header, nil if
+      # the header was not provided or could not be parsed.
+      def basic_auth
+        auth = request.env['HTTP_AUTHORIZATION'] || ''
+        encoded = auth[%r{^\s*Basic ([A-Za-z0-9+/=]+)$}, 1]
+        Base64.strict_decode64(encoded).split(/:/, 2) rescue nil
+      end
+
+      # the Bearer token found in the authorization http header, nil if the
+      # header was not provided or could not be parsed.
+      def bearer_auth
+        auth = request.env['HTTP_AUTHORIZATION'] || ''
+        auth[/^\s*Bearer (.+)$/, 1]
       end
     end
   end

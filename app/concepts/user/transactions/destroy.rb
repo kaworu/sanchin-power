@@ -27,8 +27,8 @@ module Sanchin
           true
         end
 
-        def match(user, last_seen)
-          last_seen && user.last_update <= last_seen
+        def match(user, version)
+          version && user.version == version
         end
 
         def destroy(user)

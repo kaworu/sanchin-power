@@ -7,18 +7,18 @@ module Sanchin
     # Sanchin user concept related end-points.
     class Users < Base
       # User creation end-point.
-      post '/api/v1/users' do
+      post '/api/v1/users', authenticated: true do
         transaction = UserConcept::Transactions::Create.new
         transaction.with_step_args(
-          authorize: [current_user]
+          authorize: [@current_user]
         ).call(json_body) do |on|
           on.success do |user|
             status :created
-            last_modified user.updated_at
+            etag user.version, :weak
             json user
           end
           on.failure :authorize do
-            status :unauthorized
+            status(@current_user ? :forbidden : :unauthorized)
           end
           on.failure :validate do |messages|
             status :bad_request
@@ -32,64 +32,62 @@ module Sanchin
       end
 
       # User search end-point.
-      get '/api/v1/users' do
+      get '/api/v1/users', authenticated: true do
         transaction = UserConcept::Transactions::Search.new
         transaction.with_step_args(
-          authorize: [current_user]
+          authorize: [@current_user]
         ).call do |on|
           on.success do |users|
             status :ok
-            last_modified users.map(&:updated_at).max
             json users
           end
           on.failure :authorize do
-            status :unauthorized
+            status(@current_user ? :forbidden : :unauthorized)
           end
         end
       end
 
       # User reading end-point.
-      get '/api/v1/users/:id' do |id|
+      get '/api/v1/users/:id', authenticated: true do |id|
         transaction = UserConcept::Transactions::Find.new
         transaction.with_step_args(
-          authorize: [current_user]
+          authorize: [@current_user]
         ).call(id) do |on|
           on.success do |user|
+            etag user.version, :weak
             status :ok
-            last_modified user.updated_at
             json user
           end
           on.failure :find do
             status :not_found
           end
           on.failure :authorize do
-            status :unauthorized
+            status(@current_user ? :forbidden : :unauthorized)
           end
         end
       end
 
       # User update end-point.
-      patch '/api/v1/users/:id' do |id|
-        last_seen = http_if_unmodified_since
+      patch '/api/v1/users/:id', authenticated: true do |id|
+        version = if_match_version
         transaction = UserConcept::Transactions::Update.new
         transaction.with_step_args(
           find: [id: id],
-          authorize: [current_user],
-          match: [last_seen]
+          authorize: [@current_user],
+          match: [version]
         ).call(json_body) do |on|
           on.success do |user|
             status :ok
-            last_modified user.updated_at
             json user
           end
           on.failure :find do
             status :not_found
           end
           on.failure :authorize do
-            status :unauthorized
+            status(@current_user ? :forbidden : :unauthorized)
           end
           on.failure :match do
-            status(last_seen ? :precondition_failed : :precondition_required)
+            status(version ? :precondition_failed : :precondition_required)
           end
           on.failure :validate do |messages|
             status :bad_request
@@ -111,12 +109,12 @@ module Sanchin
       end
 
       # User destruction end-point.
-      delete '/api/v1/users/:id' do |id|
-        last_seen = http_if_unmodified_since
+      delete '/api/v1/users/:id', authenticated: true do |id|
+        version = if_match_version
         transaction = UserConcept::Transactions::Destroy.new
         transaction.with_step_args(
-          authorize: [current_user],
-          match: [last_seen]
+          authorize: [@current_user],
+          match: [version]
         ).call(id) do |on|
           on.success do
             status :no_content
@@ -125,10 +123,10 @@ module Sanchin
             status :not_found
           end
           on.failure :authorize do
-            status :unauthorized
+            status(@current_user ? :forbidden : :unauthorized)
           end
           on.failure :match do
-            status(last_seen ? :precondition_failed : :precondition_required)
+            status(version ? :precondition_failed : :precondition_required)
           end
         end
       end
