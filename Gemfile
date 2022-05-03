@@ -17,8 +17,8 @@ gem 'rake',            '~> 12.3'
 gem 'request_store',   '~> 1.4', '>= 1.4.1'
 gem 'sequel',          '~> 5.19'
 gem 'sequel_pg',       '~> 1.12'
-gem 'sinatra',         '~> 2.0', '>= 2.0.5'
-gem 'sinatra-contrib', '~> 2.0', '>= 2.0.5'
+gem 'sinatra',         '~> 2.2'
+gem 'sinatra-contrib', '~> 2.2'
 
 group :development do
   gem 'bundler-audit',        '~> 0.6.1'
